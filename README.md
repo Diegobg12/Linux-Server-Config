@@ -73,3 +73,57 @@ To                         Action      From
 123/udp (v6)               ALLOW       Anywhere (v6)             
 22 (v6)                    DENY        Anywhere (v6)
 ```
+
+
+ ## 5. Create GRADER user:
+ 
+ + Istall finger to manage user by `sudo apt-get install finger`
+ + to create `sudo adduser grader`
+ + Set password and details for user.
+ + See ig user was created correctly `finger grader`
+ 
+ ## 6. Configure TIMEZONE:
+ 
+ + `sudo dpkg-reconfigure tzdata`
+ 
+ 
+ ## 7. Give GRADER sudo permits:
+ 
+ + Became the root user `sudo -i`
+ + Go to sudores `cd /etc/sudoers.d`
+ + Create file `nano grader`
+ + Paste this content `grader ALL=(ALL) NOPASSWD:ALL`
+ + Change permissions on file `chmod 440 grader`.
+ + Exit from root user `exit`
+ 
+  
+ ## 7. Give GRADER Keys:
+ 
+ ### On .shh in your local machine:
+ 
+ + Create keys `ssh-keygen`
+ + Choose a location for the tow files `~/.ssh/authorized_keys`
+ + Open the file and copy the content `nano .ssh/authorized_keys`
+ 
+ ### On grader user in VM:
+ 
+ + Create new folder `mkdir .ssh`
+ + Create file and paste content `touch .ssh/authorized_keys`
+ + set permissions 
+  ```
+     chmod 700 .ssh 
+     chmod 644 .ssh/authorized_keys
+  
+  ```
+  
+  + Turn Off password authentication in the file `sudo nano /etc/ssh/sshd_config` change `PasswordAuthentication no`
+  + Restart Ssh `sudo service ssh restart`
+  + Turn Off password authentication in the file `sudo nano /etc/ssh/sshd_config` change `PasswordAuthentication no`
+  + Turn Off password authentication in the file `sudo nano /etc/ssh/sshd_config` change `PasswordAuthentication no`
+  ### Login as GRADER user:
+  `ssh grader@54.188.22.32 -p 2200 -i ~/.ssh/authorized_keys`
+  
+  ## 8. 
+ 
+ 
+
