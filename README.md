@@ -29,7 +29,12 @@ Website on:
 + Update and upgrade packages running 
  ```sudo apt-get update```
  ```sudo apt-get upgrade```.
++ Configure automatically update packages with unattended-upgrades packages
+```
+ sudo apt-get install unattended-upgrades
+ sudo dpkg-reconfigure --priority=low unattended-upgrades
  
+ ```
  
  ## 4. CHANGE THE SERVER PORT
  
@@ -74,6 +79,12 @@ To                         Action      From
 22 (v6)                    DENY        Anywhere (v6)
 ```
 
+### Go to Lightsail
+
++ Account, Networking.
++ Select Edit rules.
++ Change 22 to 2200 deleting the ssh rule.
++ Add 123 for NTP port and save changes.
 
  ## 5. Create GRADER user:
  
@@ -123,7 +134,122 @@ To                         Action      From
   ### Login as GRADER user:
   `ssh grader@54.188.22.32 -p 2200 -i ~/.ssh/authorized_keys`
   
-  ## 8. 
+  ## 8. Configure firewall to moitos unsuccesful login attemps
+  
+  + Istall the package `sudo apt-get install fail2ban`
+  + Recive alerts toto the admin user`sudo apt-get install sendmail`
+  + File to costomize funtionality `sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local`
+  + Set configuration `sudo nano /etc/fail2ban/jail.local`
+       * destmail: user's email address
+       * `bantime = 600`
+       * `action = %(action_mwl)s`
+       
+       
+ ## 9. Install packages
+ 
+  + Install apache2 `sudo apt-get install apache2`
+  + Istall mos_wsgi `sudo apt-get install libapache2-mod-wsgi python-dev`
+  + Enable mod_wsgi: `sudo a2enmod wsgi`
+  + `sudo service apache2 start`
+  + Install GIT `sudo apt-get install git`
+  +Install pip and virtualenv
+  ```
+   sudo apt-get install python-pip
+   sudo pip install virtualenv
+   sudo virtualenv venv
+   source venv/bin/activate
+   sudo chmod -R 777 venv
+  
+ ```
+  + Flask `sudo pip install Flask`
+  + sqlalchemy `sudo pip install sqlalchemy`
+  + requests `sudo pip install requests`
+  + oauth2client `sudo pip install oauth2client`
+  + psycopg2 `sudo apt-get install python-psycopg2`
+
+## 10. Clone project
+
+  + Create directory to save project `cd /var/www`  `sudo mkdir catalog`
+  + `sudo chown -R grader:grader catalog`
+  + `cd catalog`
+  + `git clone https://github.com/Diegobg12/Catalog.git`
+  
+  
+## 11. Config app
+
+ + Configure an enable Virtual Host `sudo nano /etc/apache2/sites-available/catalog.conf`.
+ + Add the following content: 
+ ```
+ <VirtualHost *:80>
+   ServerName 52.91.21.75
+   ServerAlias ec2-52-91-21-75.compute-1.amazonaws.com
+   ServerAdmin grader@52.91.21.75
+   WSGIDaemonProcess catalog python-path=/var/www/catalog:/var/www/catalog/venv/lib/python2.7/site-packages
+   WSGIProcessGroup catalog
+   WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+   <Directory /var/www/catalog/catalog/>
+       Order allow,deny
+       Allow from all
+   </Directory>
+   Alias /static /var/www/catalog/catalog/static
+   <Directory /var/www/catalog/catalog/static/>
+       Order allow,deny
+       Allow from all
+   </Directory>
+   ErrorLog ${APACHE_LOG_DIR}/error.log
+   LogLevel warn
+   CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+ 
+ ```
+ + Enable the virtual Host `sudo a2ensite catalog
+ + Create and config the .wsgi file `cd /var/www/catalog/`
+`sudo nano catalog.wsgi`
+ + Add the following content
+ ```import sys
+import logging
+logging.basicConfig(stream=sys.stderr)
+sys.path.insert(0, "/var/www/catalog/")
+
+from catalog import app as application
+application.secret_key = 'secret'
+```
++ Rename project.py to __init__.py
++ Update the absolute path of client_secrets.json in __init__.py
++ Add app.secret_key for the Flask app in __init__.py
+
+
+## 12. Config PostgreSQL
+
++ Install Python packages for PostgreSQL `sudo apt-get install libpq-dev python-dev`.
++ Install `sudo apt-get install postgresql postgresql-contrib`
++ Connect with postgres user `sudo -u postgres psql`
++ `CREATE USER catalog WITH PASSWORD 'catalog'`
++ Connect to db `\c catalog`
++ `# REVOKE ALL ON SCHEMA public FROM public;`
++ ` GRANT ALL ON SCHEMA public TO catalog``
++  `\q`to log out and `exit`to return
++ Edit
+```
+Change engine = create_engine('sqlite:///category.db') to engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
+```
+in `populateDB.py.py` and `database_setup.py` files.
+
++ Block remote conenections to PostgreSQL `sudo nano /etc/postgresql/9.5/main/pg_hba.conf`.
+
+
+## 13. Update OAuth
+
++ Configurate credentials in Google API to new address.
++ Config `client_secrets.json`to new host address.
++ Populate DataBase running `python populateDB.py`
+
+
+
+
+
+
+ 
  
  
 
