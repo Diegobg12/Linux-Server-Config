@@ -184,15 +184,15 @@ To                         Action      From
    ServerName 52.91.21.75
    ServerAlias ec2-52-91-21-75.compute-1.amazonaws.com
    ServerAdmin grader@52.91.21.75
-   WSGIDaemonProcess catalog python-path=/var/www/catalog:/var/www/catalog/venv/lib/python2.7/site-packages
+   WSGIDaemonProcess catalog python-path=/var/www/catalog:/var/www/catalog/Catalog/venv/lib/python2.7/site-packages
    WSGIProcessGroup catalog
-   WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+   WSGIScriptAlias / /var/www/catalog/Catalog/catalog.wsgi
    <Directory /var/www/catalog/catalog/>
        Order allow,deny
        Allow from all
    </Directory>
    Alias /static /var/www/catalog/catalog/static
-   <Directory /var/www/catalog/catalog/static/>
+   <Directory /var/www/catalog/catalog/Catalog/static/>
        Order allow,deny
        Allow from all
    </Directory>
@@ -203,13 +203,13 @@ To                         Action      From
  
  ```
  + Enable the virtual Host `sudo a2ensite catalog
- + Create and config the .wsgi file `cd /var/www/catalog/`
+ + Create and config the .wsgi file `cd /var/www/catalog/Catalog`
 `sudo nano catalog.wsgi`
  + Add the following content
  ```import sys
 import logging
 logging.basicConfig(stream=sys.stderr)
-sys.path.insert(0, "/var/www/catalog/")
+sys.path.insert(0, "/var/www/catalog/Catalog")
 
 from catalog import app as application
 application.secret_key = 'secret'
