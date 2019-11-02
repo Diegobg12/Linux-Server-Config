@@ -3,7 +3,7 @@ Udacity final project for [Full Stack Web Developer
 ](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd0044)
 
 
-Website on:
+Website on: http://35.165.20.33/
 
 ## 1. CREATE A SERVER
 
@@ -108,7 +108,7 @@ To                         Action      From
  + Exit from root user `exit`
  
   
- ## 7. Give GRADER Keys:
+ ## 8. Give GRADER Keys:
  
  ### On .shh in your local machine:
  
@@ -134,7 +134,7 @@ To                         Action      From
   ### Login as GRADER user:
   `ssh grader@54.188.22.32 -p 2200 -i ~/.ssh/authorized_keys`
   
-  ## 8. Configure firewall to moitos unsuccesful login attemps
+  ## 9. Configure firewall to moitos unsuccesful login attemps
   
   + Istall the package `sudo apt-get install fail2ban`
   + Recive alerts toto the admin user`sudo apt-get install sendmail`
@@ -145,7 +145,7 @@ To                         Action      From
        * `action = %(action_mwl)s`
        
        
- ## 9. Install packages
+ ## 10. Install packages
  
   + Install apache2 `sudo apt-get install apache2`
   + Istall mos_wsgi `sudo apt-get install libapache2-mod-wsgi python-dev`
@@ -167,7 +167,7 @@ To                         Action      From
   + oauth2client `sudo pip install oauth2client`
   + psycopg2 `sudo apt-get install python-psycopg2`
 
-## 10. Clone project
+## 11. Clone project
 
   + Create directory to save project `cd /var/www`  `sudo mkdir catalog`
   + `sudo chown -R grader:grader catalog`
@@ -175,7 +175,7 @@ To                         Action      From
   + `git clone https://github.com/Diegobg12/Catalog.git`
   
   
-## 11. Config app
+## 12. Config app
 
  + Configure an enable Virtual Host `sudo nano /etc/apache2/sites-available/catalog.conf`.
  + Add the following content: 
@@ -219,7 +219,7 @@ application.secret_key = 'secret'
 + Add app.secret_key for the Flask app in __init__.py
 
 
-## 12. Config PostgreSQL
+## 13. Config PostgreSQL
 
 + Install Python packages for PostgreSQL `sudo apt-get install libpq-dev python-dev`.
 + Install `sudo apt-get install postgresql postgresql-contrib`
@@ -238,7 +238,7 @@ in `populateDB.py.py` and `database_setup.py` files.
 + Block remote conenections to PostgreSQL `sudo nano /etc/postgresql/9.5/main/pg_hba.conf`.
 
 
-## 13. Update OAuth
+## 14. Update OAuth
 
 + Configurate credentials in Google API to new address.
 + Config `client_secrets.json`to new host address.
