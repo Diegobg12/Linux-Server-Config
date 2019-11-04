@@ -1,10 +1,12 @@
 # Linux-Server-Config
+This document explain how to deploy an app on [AWS](https://lightsail.aws.amazon.com/ls/webapp/home/instances)
 Udacity final project for [Full Stack Web Developer
 ](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd0044)
 
 
-Website on: http://18.236.101.92/
-or http://ec2-18-236-101-92.us-west-2.compute.amazonaws.com/catalog/Baseball/3/items
+## Website
+ + http://18.236.101.92/
+ + http://ec2-18-236-101-92.us-west-2.compute.amazonaws.com/catalog/Baseball/3/items
 
 ## 1. CREATE A SERVER
 
@@ -45,7 +47,7 @@ or http://ec2-18-236-101-92.us-west-2.compute.amazonaws.com/catalog/Baseball/3/i
  + Restart SSH with `sudo service ssh restart`
 
 
- ## 4. Set up Uncomplicated FireWall (UFW)
+ ## 5. Set up Uncomplicated FireWall (UFW)
  
 + `sudo ufw status`  # The UFW should be inactive.
 
@@ -87,18 +89,18 @@ To                         Action      From
 + Change 22 to 2200 deleting the ssh rule.
 + Add 123 for NTP port and save changes.
 
- ## 5. Configure TIMEZONE:
+ ## 6. Configure TIMEZONE:
  
  + `sudo dpkg-reconfigure tzdata`
 
- ## 6. Create GRADER user:
+ ## 7. Create GRADER user:
  
  + Istall finger to manage user by `sudo apt-get install finger`
  + to create `sudo adduser grader
  + Set password and details for user.
  + See ig user was created correctly `finger grader`
  
- ## 7. Give GRADER sudo permits:
+ ## 8. Give GRADER sudo permits:
  
  + Edit `sudo visudo`
  + Below `root    ALL=(ALL:ALL) ALL` add `grader  ALL=(ALL:ALL) ALL`
@@ -113,7 +115,7 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
  ```
  +  
   
- ## 8. Give GRADER Keys:
+ ## 9. Give GRADER Keys:
  
  ### On .shh in your local machine:
  
@@ -139,7 +141,7 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
   ### Login as GRADER user:
   `ssh grader@54.188.22.32 -p 2200 -i ~/.ssh/authorized_keys`
   
-  ## 9. Configure firewall to monitor unsuccesful login attemps
+  ## 10. Configure firewall to monitor unsuccesful login attemps
   
   + Istall the package `sudo apt-get install fail2ban`
   + Recive alerts toto the admin user`sudo apt-get install sendmail`
@@ -150,7 +152,7 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
        * `action = %(action_mwl)s`
        
        
- ## 10. Install Apache
+ ## 11. Install Apache
  
   + Install apache2 `sudo apt-get install apache2`
   + Istall mos_wsgi `sudo apt-get install libapache2-mod-wsgi-py3`
@@ -158,7 +160,7 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
   + `sudo service apache2 start`
   + Verify apache2 Ubuntu Default Page.
   
-  ## 11. Install, conf and create DB with PostgresSQL
+  ## 12. Install, conf and create DB with PostgresSQL
   
   + Install Python packages for PostgreSQL `sudo apt-get install libpq-dev python-dev`.
  + Install `sudo apt-get install postgresql postgresql-contrib`
@@ -183,7 +185,7 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
  + Switch back to Grader user with `exit`.
 
 
-  ## 12. Clone project
+  ## 13. Clone project
   
   + Install GIT `sudo apt-get install git`
   + Create directory to save project `cd /var/www`  `sudo mkdir catalog`
@@ -193,7 +195,7 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
   + rename the app.py file by `mv app.py __init()__.py
 
  
-   ## 13. Install virtual env. and dependencies
+   ## 14. Install virtual env. and dependencies
    
    + While logged in in `grader`
    + Install pip `sudo apt-get install python3-pip`
@@ -210,81 +212,81 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
    + Desactivate the V.E. `deactivate`
   
   
-## 12. Config app
+  ## 15. Config app
 
- + `sudo nano /etc/apache2/mods-enabled/wsgi.conf file to use Python 3` and add the following line:
- ```
- #WSGIPythonPath directory|directory-1:directory-2:...
- WSGIPythonPath /var/www/catalog/catalog/venv3/lib/python3.5/site-packages
- ```
- + Configure an enable Virtual Host `sudo nano /etc/apache2/sites-available/catalog.conf`.
- + Add the following content: 
- ```
-<VirtualHost *:80>
-    ServerName 18.236.101.92
-  ServerAlias ec2-18-236-101-92.us-west-2.compute.amazonaws.com
-    WSGIScriptAlias / /var/www/catalog/catalog.wsgi
-    <Directory /var/www/catalog/catalog/>
-    	Order allow,deny
-  	  Allow from all
-    </Directory>
-    Alias /static /var/www/catalog/catalog/static
-    <Directory /var/www/catalog/catalog/static/>
-  	  Order allow,deny
-  	  Allow from all
-    </Directory>
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    LogLevel warn
-    CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
- 
- ```
- + Enable the virtual Host `sudo a2ensite catalog
- + Reload Apache `sudo service apache2 reload`.
- + Create and config the .wsgi file `sudo nano /var/www/catalog/catalog.wsgi`
+   + `sudo nano /etc/apache2/mods-enabled/wsgi.conf file to use Python 3` and add the following line:
+   ```
+   #WSGIPythonPath directory|directory-1:directory-2:...
+   WSGIPythonPath /var/www/catalog/catalog/venv3/lib/python3.5/site-packages
+   ```
+   + Configure an enable Virtual Host `sudo nano /etc/apache2/sites-available/catalog.conf`.
+   + Add the following content: 
+   ```
+  <VirtualHost *:80>
+      ServerName 18.236.101.92
+    ServerAlias ec2-18-236-101-92.us-west-2.compute.amazonaws.com
+      WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+      <Directory /var/www/catalog/catalog/>
+       Order allow,deny
+       Allow from all
+      </Directory>
+      Alias /static /var/www/catalog/catalog/static
+      <Directory /var/www/catalog/catalog/static/>
+       Order allow,deny
+       Allow from all
+      </Directory>
+      ErrorLog ${APACHE_LOG_DIR}/error.log
+      LogLevel warn
+      CustomLog ${APACHE_LOG_DIR}/access.log combined
+  </VirtualHost>
 
- + Add the following content
- ```import sys
-import logging
-logging.basicConfig(stream=sys.stderr)
-sys.path.insert(0, "/var/www/catalog/Catalog")
+   ```
+   + Enable the virtual Host `sudo a2ensite catalog
+   + Reload Apache `sudo service apache2 reload`.
+   + Create and config the .wsgi file `sudo nano /var/www/catalog/catalog.wsgi`
 
-from catalog import app as application
-application.secret_key = 'secret'
-```
- + Reload Apache `sudo service apache2 reload`.
+   + Add the following content
+   ```import sys
+  import logging
+  logging.basicConfig(stream=sys.stderr)
+  sys.path.insert(0, "/var/www/catalog/Catalog")
 
-
-## 13. Update OAuth
-
- + Configurate credentials in Google API to new address.
- + Config `client_secrets.json`to new host address.
+  from catalog import app as application
+  application.secret_key = 'secret'
+  ```
+   + Reload Apache `sudo service apache2 reload`.
 
 
-## 14. Launch the app.
+ ## 16. Update OAuth
 
- + Activate the V.E. by `. venv3/bin/activate`
- + Run `python database_setup.py`
- + Populate DataBase running `python populateDB.py`
- + Desactivate the V.E. `deactivate`
- + Reload Apache `sudo service apache2 reload`.
- + Open http://ec2-18-236-101-92.us-west-2.compute.amazonaws.com/catalog/Baseball/3/items
+  + Configurate credentials in Google API to new address.
+  + Config `client_secrets.json`to new host address.
 
 
-## 15 Sources. 
+ ## 17. Launch the app.
 
- + [Lightsail](https://lightsail.aws.amazon.com/ls/webapp/home/instances)
- + [How to Create a Server on Amazon Lightsail](https://serverpilot.io/docs/how-to-create-a-server-on-amazon-lightsail)
- + [postgresSQL](https://www.postgresql.org/)
- + [UFW - Uncomplicated Firewall](https://help.ubuntu.com/community/UFW)
- + [How To Protect SSH with Fail2Ban on Ubuntu 14.04](https://www.digitalocean.com/community/tutorials/how-to-protect-ssh-with-fail2ban-on-ubuntu-14-04)
- + [How To Add and Delete Users on an Ubuntu 14.04 VPS](https://www.digitalocean.com/community/tutorials/how-to-add-and-delete-users-on-an-ubuntu-14-04-vps)
- + [How To Secure PostgreSQL on an Ubuntu VPS](https://www.digitalocean.com/community/tutorials/how-to-secure-postgresql-on-an-ubuntu-vps)
- + [Google Cloud Plateform](https://console.cloud.google.com/home/dashboard?project=cedar-league-253513)
- + [Create a Python 3 virtual environment](https://superuser.com/questions/1039369/create-a-python-3-virtual-environment)
- + [Getting Flask to use Python3 (Apache/mod_wsgi)](https://stackoverflow.com/questions/30642894/getting-flask-to-use-python3-apache-mod-wsgi)
- + [Working with Virtual Environments](https://flask.palletsprojects.com/en/0.12.x/deploying/mod_wsgi/#working-with-virtual-environments)
- 
+  + Activate the V.E. by `. venv3/bin/activate`
+  + Run `python database_setup.py`
+  + Populate DataBase running `python populateDB.py`
+  + Desactivate the V.E. `deactivate`
+  + Reload Apache `sudo service apache2 reload`.
+  + Open http://ec2-18-236-101-92.us-west-2.compute.amazonaws.com/catalog/Baseball/3/items
+
+
+ ## 18. Sources. 
+
+  + [Lightsail](https://lightsail.aws.amazon.com/ls/webapp/home/instances)
+  + [How to Create a Server on Amazon Lightsail](https://serverpilot.io/docs/how-to-create-a-server-on-amazon-lightsail)
+  + [postgresSQL](https://www.postgresql.org/)
+  + [UFW - Uncomplicated Firewall](https://help.ubuntu.com/community/UFW)
+  + [How To Protect SSH with Fail2Ban on Ubuntu 14.04](https://www.digitalocean.com/community/tutorials/how-to-protect-ssh-with-fail2ban-on-ubuntu-14-04)
+  + [How To Add and Delete Users on an Ubuntu 14.04 VPS](https://www.digitalocean.com/community/tutorials/how-to-add-and-delete-users-on-an-ubuntu-14-04-vps)
+  + [How To Secure PostgreSQL on an Ubuntu VPS](https://www.digitalocean.com/community/tutorials/how-to-secure-postgresql-on-an-ubuntu-vps)
+  + [Google Cloud Plateform](https://console.cloud.google.com/home/dashboard?project=cedar-league-253513)
+  + [Create a Python 3 virtual environment](https://superuser.com/questions/1039369/create-a-python-3-virtual-environment)
+  + [Getting Flask to use Python3 (Apache/mod_wsgi)](https://stackoverflow.com/questions/30642894/getting-flask-to-use-python3-apache-mod-wsgi)
+  + [Working with Virtual Environments](https://flask.palletsprojects.com/en/0.12.x/deploying/mod_wsgi/#working-with-virtual-environments)
+
 
 
 
