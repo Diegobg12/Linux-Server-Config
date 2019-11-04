@@ -5,8 +5,8 @@ Udacity final project for [Full Stack Web Developer
 
 
 ## Website
- + http://18.236.101.92/
- + http://ec2-18-236-101-92.us-west-2.compute.amazonaws.com/catalog/Baseball/3/items
+ + http://34.212.92.249/
+ + http://ec2-34-212-92-249.us-west-2.compute.amazonaws.com
 
 ## 1. CREATE A SERVER
 
