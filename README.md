@@ -222,23 +222,23 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
    + Configure an enable Virtual Host `sudo nano /etc/apache2/sites-available/catalog.conf`.
    + Add the following content: 
    ```
-  <VirtualHost *:80>
-      ServerName 18.236.101.92
-    ServerAlias ec2-18-236-101-92.us-west-2.compute.amazonaws.com
-      WSGIScriptAlias / /var/www/catalog/catalog.wsgi
-      <Directory /var/www/catalog/catalog/>
-       Order allow,deny
-       Allow from all
-      </Directory>
-      Alias /static /var/www/catalog/catalog/static
-      <Directory /var/www/catalog/catalog/static/>
-       Order allow,deny
-       Allow from all
-      </Directory>
-      ErrorLog ${APACHE_LOG_DIR}/error.log
-      LogLevel warn
-      CustomLog ${APACHE_LOG_DIR}/access.log combined
-  </VirtualHost>
+<VirtualHost *:80>
+    ServerName 34.212.92.249
+  ServerAlias ec2-34-212-92-249.us-west-2.compute.amazonaws.com
+    WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+    <Directory /var/www/catalog/catalog/>
+        Order allow,deny
+          Allow from all
+    </Directory>
+    Alias /static /var/www/catalog/catalog/static
+    <Directory /var/www/catalog/catalog/static/>
+          Order allow,deny
+          Allow from all
+    </Directory>
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    LogLevel warn
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
 
    ```
    + Enable the virtual Host `sudo a2ensite catalog
