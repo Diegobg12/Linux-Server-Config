@@ -3,7 +3,8 @@ Udacity final project for [Full Stack Web Developer
 ](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd0044)
 
 
-Website on: http://35.165.20.33/
+Website on: http://18.236.101.92/
+or http://ec2-18-236-101-92.us-west-2.compute.amazonaws.com/catalog/Baseball/3/items
 
 ## 1. CREATE A SERVER
 
@@ -86,27 +87,31 @@ To                         Action      From
 + Change 22 to 2200 deleting the ssh rule.
 + Add 123 for NTP port and save changes.
 
- ## 5. Create GRADER user:
+ ## 5. Configure TIMEZONE:
+ 
+ + `sudo dpkg-reconfigure tzdata`
+
+ ## 6. Create GRADER user:
  
  + Istall finger to manage user by `sudo apt-get install finger`
- + to create `sudo adduser grader`
+ + to create `sudo adduser grader
  + Set password and details for user.
  + See ig user was created correctly `finger grader`
  
- ## 6. Configure TIMEZONE:
- 
- + `sudo dpkg-reconfigure tzdata`
- 
- 
  ## 7. Give GRADER sudo permits:
  
- + Became the root user `sudo -i`
- + Go to sudores `cd /etc/sudoers.d`
- + Create file `nano grader`
- + Paste this content `grader ALL=(ALL) NOPASSWD:ALL`
- + Change permissions on file `chmod 440 grader`.
- + Exit from root user `exit`
- 
+ + Edit `sudo visudo`
+ + Below `root    ALL=(ALL:ALL) ALL` add `grader  ALL=(ALL:ALL) ALL`
+ + Log in as grader `su - grader`.
+ + Verify sudo permissions `sudo -l`, the output should be:
+ ```
+ Matching Defaults entries for grader on ip-18.236.101.92.us-west-2.compute.internal:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User grader may run the following commands on ip-18.236.101.92.us-west-2.compute.internal:
+    (ALL : ALL) ALL
+ ```
+ +  
   
  ## 8. Give GRADER Keys:
  
@@ -134,7 +139,7 @@ To                         Action      From
   ### Login as GRADER user:
   `ssh grader@54.188.22.32 -p 2200 -i ~/.ssh/authorized_keys`
   
-  ## 9. Configure firewall to moitos unsuccesful login attemps
+  ## 9. Configure firewall to monitor unsuccesful login attemps
   
   + Istall the package `sudo apt-get install fail2ban`
   + Recive alerts toto the admin user`sudo apt-get install sendmail`
@@ -145,66 +150,99 @@ To                         Action      From
        * `action = %(action_mwl)s`
        
        
- ## 10. Install packages
+ ## 10. Install Apache
  
   + Install apache2 `sudo apt-get install apache2`
-  + Istall mos_wsgi `sudo apt-get install libapache2-mod-wsgi python-dev`
+  + Istall mos_wsgi `sudo apt-get install libapache2-mod-wsgi-py3`
   + Enable mod_wsgi: `sudo a2enmod wsgi`
   + `sudo service apache2 start`
-  + Install GIT `sudo apt-get install git`
-  +Install pip and virtualenv
-  ```
-   sudo apt-get install python-pip
-   sudo pip install virtualenv
-   sudo virtualenv venv
-   source venv/bin/activate
-   sudo chmod -R 777 venv
+  + Verify apache2 Ubuntu Default Page.
   
+  ## 11. Install, conf and create DB with PostgresSQL
+  
+  + Install Python packages for PostgreSQL `sudo apt-get install libpq-dev python-dev`.
+ + Install `sudo apt-get install postgresql postgresql-contrib`
+ + Connect with postgres user `sudo -u postgres psql`
+ + `CREATE ROLE catalog WITH LOGIN PASSWORD 'password'`;
+ + `ALTER ROLE catalog CREATEDB;`
+ + Connect to db `\c catalog`
+ + `# REVOKE ALL ON SCHEMA public FROM public;`
+ + ` GRANT ALL ON SCHEMA public TO catalog``
+ +  `\q`to log out and `exit`to return
+ + Edit
  ```
-  + Flask `sudo pip install Flask`
-  + sqlalchemy `sudo pip install sqlalchemy`
-  + requests `sudo pip install requests`
-  + oauth2client `sudo pip install oauth2client`
-  + psycopg2 `sudo apt-get install python-psycopg2`
+ Change engine = create_engine('sqlite:///category.db') to engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
+ ```
+ in `populateDB.py.py` and `database_setup.py` files before clone.
 
-## 11. Clone project
+ + Verify remote conenections are blocked to PostgreSQL `sudo nano /etc/postgresql/9.5/main/pg_hba.conf`.
+ + Create a catalog user `sudo adduser catalog`.
+ + Give it sudo permissions by adding `catalog  ALL=(ALL:ALL) ALL` in `sudo visudo`.
+ + Verify permissions, logg in `su - catalog` and `sudo -l`.
+ + While log in in `catalog`in user `createdb catalog`.
+ + Switch back to Grader user with `exit`.
 
+
+  ## 12. Clone project
+  
+  + Install GIT `sudo apt-get install git`
   + Create directory to save project `cd /var/www`  `sudo mkdir catalog`
   + `sudo chown -R grader:grader catalog`
   + `cd catalog`
   + `git clone https://github.com/Diegobg12/Catalog.git`
+  + rename the app.py file by `mv app.py __init()__.py
+
+ 
+   ## 13. Install virtual env. and dependencies
+   
+   + While logged in in `grader`
+   + Install pip `sudo apt-get install python3-pip`
+   + In /var/www/catalog/catalog/ directory.
+   + Create the V.E. `sudo virtualenv -p python3 venv3`.
+   + `Grader` as the ownership `sudo chown -R grader:grader venv3/`.
+   + Activate the V.E. by `. venv3/bin/activate`
+   + Flask `sudo pip install Flask`
+   + sqlalchemy `sudo pip install sqlalchemy`
+   + requests `sudo pip install requests`
+   + oauth2client `sudo pip install oauth2client`
+   + psycopg2 `sudo apt-get install python-psycopg2`
+   + Run the `python3 __init__.py`.
+   + Desactivate the V.E. `deactivate`
   
   
 ## 12. Config app
 
+ + `sudo nano /etc/apache2/mods-enabled/wsgi.conf file to use Python 3` and add the following line:
+ ```
+ #WSGIPythonPath directory|directory-1:directory-2:...
+ WSGIPythonPath /var/www/catalog/catalog/venv3/lib/python3.5/site-packages
+ ```
  + Configure an enable Virtual Host `sudo nano /etc/apache2/sites-available/catalog.conf`.
  + Add the following content: 
  ```
- <VirtualHost *:80>
-   ServerName 52.91.21.75
-   ServerAlias ec2-52-91-21-75.compute-1.amazonaws.com
-   ServerAdmin grader@52.91.21.75
-   WSGIDaemonProcess catalog python-path=/var/www/catalog:/var/www/catalog/Catalog/venv/lib/python2.7/site-packages
-   WSGIProcessGroup catalog
-   WSGIScriptAlias / /var/www/catalog/Catalog/catalog.wsgi
-   <Directory /var/www/catalog/catalog/>
-       Order allow,deny
-       Allow from all
-   </Directory>
-   Alias /static /var/www/catalog/catalog/static
-   <Directory /var/www/catalog/catalog/Catalog/static/>
-       Order allow,deny
-       Allow from all
-   </Directory>
-   ErrorLog ${APACHE_LOG_DIR}/error.log
-   LogLevel warn
-   CustomLog ${APACHE_LOG_DIR}/access.log combined
+<VirtualHost *:80>
+    ServerName 18.236.101.92
+  ServerAlias ec2-18-236-101-92.us-west-2.compute.amazonaws.com
+    WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+    <Directory /var/www/catalog/catalog/>
+    	Order allow,deny
+  	  Allow from all
+    </Directory>
+    Alias /static /var/www/catalog/catalog/static
+    <Directory /var/www/catalog/catalog/static/>
+  	  Order allow,deny
+  	  Allow from all
+    </Directory>
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    LogLevel warn
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
  
  ```
  + Enable the virtual Host `sudo a2ensite catalog
- + Create and config the .wsgi file `cd /var/www/catalog/Catalog`
-`sudo nano catalog.wsgi`
+ + Reload Apache `sudo service apache2 reload`.
+ + Create and config the .wsgi file `sudo nano /var/www/catalog/catalog.wsgi`
+
  + Add the following content
  ```import sys
 import logging
@@ -214,35 +252,39 @@ sys.path.insert(0, "/var/www/catalog/Catalog")
 from catalog import app as application
 application.secret_key = 'secret'
 ```
-+ Rename project.py to __init__.py
-+ Update the absolute path of client_secrets.json in __init__.py
-+ Add app.secret_key for the Flask app in __init__.py
+ + Reload Apache `sudo service apache2 reload`.
 
 
-## 13. Config PostgreSQL
+## 13. Update OAuth
 
-+ Install Python packages for PostgreSQL `sudo apt-get install libpq-dev python-dev`.
-+ Install `sudo apt-get install postgresql postgresql-contrib`
-+ Connect with postgres user `sudo -u postgres psql`
-+ `CREATE USER catalog WITH PASSWORD 'catalog'`
-+ Connect to db `\c catalog`
-+ `# REVOKE ALL ON SCHEMA public FROM public;`
-+ ` GRANT ALL ON SCHEMA public TO catalog``
-+  `\q`to log out and `exit`to return
-+ Edit
-```
-Change engine = create_engine('sqlite:///category.db') to engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
-```
-in `populateDB.py.py` and `database_setup.py` files.
-
-+ Block remote conenections to PostgreSQL `sudo nano /etc/postgresql/9.5/main/pg_hba.conf`.
+ + Configurate credentials in Google API to new address.
+ + Config `client_secrets.json`to new host address.
 
 
-## 14. Update OAuth
+## 14. Launch the app.
 
-+ Configurate credentials in Google API to new address.
-+ Config `client_secrets.json`to new host address.
-+ Populate DataBase running `python populateDB.py`
+ + Activate the V.E. by `. venv3/bin/activate`
+ + Run `python database_setup.py`
+ + Populate DataBase running `python populateDB.py`
+ + Desactivate the V.E. `deactivate`
+ + Reload Apache `sudo service apache2 reload`.
+ + Open http://ec2-18-236-101-92.us-west-2.compute.amazonaws.com/catalog/Baseball/3/items
+
+
+## 15 Sources. 
+
+ + [Lightsail](https://lightsail.aws.amazon.com/ls/webapp/home/instances)
+ + [How to Create a Server on Amazon Lightsail](https://serverpilot.io/docs/how-to-create-a-server-on-amazon-lightsail)
+ + [postgresSQL](https://www.postgresql.org/)
+ + [UFW - Uncomplicated Firewall](https://help.ubuntu.com/community/UFW)
+ + [How To Protect SSH with Fail2Ban on Ubuntu 14.04](https://www.digitalocean.com/community/tutorials/how-to-protect-ssh-with-fail2ban-on-ubuntu-14-04)
+ + [How To Add and Delete Users on an Ubuntu 14.04 VPS](https://www.digitalocean.com/community/tutorials/how-to-add-and-delete-users-on-an-ubuntu-14-04-vps)
+ + [How To Secure PostgreSQL on an Ubuntu VPS](https://www.digitalocean.com/community/tutorials/how-to-secure-postgresql-on-an-ubuntu-vps)
+ + [Google Cloud Plateform](https://console.cloud.google.com/home/dashboard?project=cedar-league-253513)
+ + [Create a Python 3 virtual environment](https://superuser.com/questions/1039369/create-a-python-3-virtual-environment)
+ + [Getting Flask to use Python3 (Apache/mod_wsgi)](https://stackoverflow.com/questions/30642894/getting-flask-to-use-python3-apache-mod-wsgi)
+ + [Working with Virtual Environments](https://flask.palletsprojects.com/en/0.12.x/deploying/mod_wsgi/#working-with-virtual-environments)
+ 
 
 
 
