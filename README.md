@@ -3,6 +3,8 @@ This document explain how to deploy an app on [AWS](https://lightsail.aws.amazon
 Udacity final project for [Full Stack Web Developer
 ](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd0044)
 
++ LOG IN AS GRADER USER: `ssh -i grader_key -p 2200 grader@34.212.92.249`
+
 
 ## Website
  + http://34.212.92.249/
@@ -24,7 +26,7 @@ Udacity final project for [Full Stack Web Developer
 + Restric file permission by running chmod 600 `LightsailDefaultPrivateKey-*.pem`
 + Change the file name to `lightsail_key.rsa`.
 
-+ To connect run in your terminal `ssh -i ~/.ssh/lightsail_key.rsa ubuntu@54.188.22.32`.
++ To connect run in your terminal `ssh -i ~/.ssh/lightsail_key.rsa ubuntu@34.212.92.249`.
 
 
 ## 3. SECURE THE SERVER
@@ -139,7 +141,7 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
   + Turn Off password authentication in the file `sudo nano /etc/ssh/sshd_config` change `PasswordAuthentication no`
   + Turn Off password authentication in the file `sudo nano /etc/ssh/sshd_config` change `PasswordAuthentication no`
   ### Login as GRADER user:
-  `ssh grader@54.188.22.32 -p 2200 -i ~/.ssh/authorized_keys`
+  `ssh -i grader_key -p 2200 grader@34.212.92.249`
   
   ## 10. Configure firewall to monitor unsuccesful login attemps
   
@@ -270,7 +272,7 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
   + Populate DataBase running `python populateDB.py`
   + Desactivate the V.E. `deactivate`
   + Reload Apache `sudo service apache2 reload`.
-  + Open http://ec2-18-236-101-92.us-west-2.compute.amazonaws.com/catalog/Baseball/3/items
+  + Open http://ec2-18-236-101-92.us-west-2.compute.amazonaws.com
 
 
  ## 18. Sources. 
