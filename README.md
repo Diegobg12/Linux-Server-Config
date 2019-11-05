@@ -167,7 +167,7 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
   + Install Python packages for PostgreSQL `sudo apt-get install libpq-dev python-dev`.
  + Install `sudo apt-get install postgresql postgresql-contrib`
  + Connect with postgres user `sudo -u postgres psql`
- + `CREATE ROLE catalog WITH LOGIN PASSWORD 'password'`;
+ + `CREATE ROLE catalog WITH LOGIN PASSWORD 'project'`;
  + `ALTER ROLE catalog CREATEDB;`
  + Connect to db `\c catalog`
  + `# REVOKE ALL ON SCHEMA public FROM public;`
@@ -175,7 +175,7 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
  +  `\q`to log out and `exit`to return
  + Edit
  ```
- Change engine = create_engine('sqlite:///category.db') to engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
+ Change engine = create_engine('sqlite:///category.db') to engine = create_engine('postgresql://catalog:project@localhost/catalog')
  ```
  in `populateDB.py.py` and `database_setup.py` files before clone.
 
