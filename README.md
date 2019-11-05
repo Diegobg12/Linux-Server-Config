@@ -3,12 +3,12 @@ This document explain how to deploy an app on [AWS](https://lightsail.aws.amazon
 Udacity final project for [Full Stack Web Developer
 ](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd0044)
 
-+ LOG IN AS GRADER USER: `ssh -i grader_key -p 2200 grader@34.212.92.249`
++ LOG IN AS GRADER USER: `ssh -i grader_key -p 2200 grader@54.214.155.62`
 
 
 ## Website
- + http://34.212.92.249/
- + http://ec2-34-212-92-249.us-west-2.compute.amazonaws.com
+ + http://54.214.155.62/
+ + http://ec2-54-212-155-62.us-west-2.compute.amazonaws.com
 
 ## 1. CREATE A SERVER
 
@@ -225,8 +225,8 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
    + Add the following content: 
    ```
 <VirtualHost *:80>
-    ServerName 34.212.92.249
-  ServerAlias ec2-34-212-92-249.us-west-2.compute.amazonaws.com
+    ServerName 54.214.155.62
+  ServerAlias ec2-54-214-155-62.us-west-2.compute.amazonaws.com
     WSGIScriptAlias / /var/www/catalog/catalog.wsgi
     <Directory /var/www/catalog/catalog/>
         Order allow,deny
