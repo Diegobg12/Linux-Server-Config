@@ -8,7 +8,7 @@ Udacity final project for [Full Stack Web Developer
 
 ## Website
  + http://54.214.155.62/
- + http://ec2-54-212-155-62.us-west-2.compute.amazonaws.com
+
 
 ## 1. CREATE A SERVER
 
