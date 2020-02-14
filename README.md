@@ -1,9 +1,5 @@
 # Linux-Server-Config
-This document explain how to deploy an app on [AWS](https://lightsail.aws.amazon.com/ls/webapp/home/instances)
-Udacity final project for [Full Stack Web Developer
-](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd0044)
-
-+ LOG IN AS GRADER USER: `ssh -i grader_key -p 2200 grader@54.214.155.62`
+This document explain how to deploy a python3 app using Flask as a framework on [AWS](https://lightsail.aws.amazon.com/ls/webapp/home/instances).
 
 
 ## Website
@@ -273,9 +269,13 @@ User grader may run the following commands on ip-18.236.101.92.us-west-2.compute
   + Desactivate the V.E. `deactivate`
   + Reload Apache `sudo service apache2 reload`.
   + Open http://ec2-18-236-101-92.us-west-2.compute.amazonaws.com
+  
+  ## 18. This is the website front page.
+  
+  ![Screenshot](WEBSITE.png)
 
 
- ## 18. Sources. 
+ ## 19. Sources. 
 
   + [Lightsail](https://lightsail.aws.amazon.com/ls/webapp/home/instances)
   + [How to Create a Server on Amazon Lightsail](https://serverpilot.io/docs/how-to-create-a-server-on-amazon-lightsail)
